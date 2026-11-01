@@ -1,10 +1,11 @@
 [submodule "vesc"]
 	path = vesc
-	url = https://github.com/f1tenth/vesc.git
-	branch = jazzy
+	url = https://github.com/iskarian/vesc.git
+	branch = jazzy-unlv
 [submodule "ackermann_mux"]
 	path = ackermann_mux
-	url = https://github.com/f1tenth/ackermann_mux.git
+	url = https://github.com/iskarian/ackermann_mux.git
+	branch = jazzy-devel
 [submodule "teleop_tools"]
 	path = teleop_tools
 	url = https://github.com/f1tenth/teleop_tools.git
