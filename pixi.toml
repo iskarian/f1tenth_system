@@ -1,0 +1,18 @@
+[workspace]
+preview = ["pixi-build"]
+channels = [
+  "https://prefix.dev/pixi-build-backends",
+  "https://prefix.dev/robostack-jazzy",
+  "https://prefix.dev/conda-forge"
+]
+
+platforms = [ { name = "jetson-orin", platform = "linux-aarch64", cuda = "13" } ]
+
+# pixi-build will autodetect this is a ROS package, and use pixi-build-ros to build it
+[dependencies]
+ros-jazzy-f1tenth-stack = { path = "f1tenth_stack/package.xml" }
+
+[tasks]
+# optionally add --create-executable if pixi is not on the jetson
+stage = "pixi pack --platform jetson-orin --use-cache ~/.pixi-pack/cache -o staging/f1tenth_stack.tar"
+
