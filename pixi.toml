@@ -6,13 +6,33 @@ channels = [
   "https://prefix.dev/conda-forge"
 ]
 
-platforms = [ { name = "jetson-orin", platform = "linux-aarch64", cuda = "13" } ]
+platforms = [ "linux-64", { name = "jetson-orin", platform = "linux-aarch64", cuda = "13" } ]
 
 # pixi-build will autodetect this is a ROS package, and use pixi-build-ros to build it
-[dependencies]
-ros-jazzy-f1tenth-stack = { path = "f1tenth_stack/package.xml" }
+# [target.jetson-orin.dependencies]
+# ros-jazzy-f1tenth-stack = { path = "f1tenth_stack/package.xml" }
+# ros-jazzy-aeb = { path = "aeb" }
+
+[workspace.dependencies]
+pixi-build-ros = ">=v0.7.7"
 
 [tasks]
 # optionally add --create-executable if pixi is not on the jetson
-stage = "pixi pack --platform jetson-orin --use-cache ~/.pixi-pack/cache -o staging/f1tenth_stack.tar"
+# TODO supply a blank repodata.json
+prep-staging = '''
+mkdir -p staging-channel/noarch
+[ ! -f staging-channel/noarch/repodata.json ] && echo '{}' > staging-channel/noarch/repodata.json
+cp -t staging-channel pixi.lock deploy/pixi.toml
+cd staging-channel && pixi lock
+'''
+publish = {
+  cmd = "pixi publish -t linux-aarch64 ----target-channel ./staging/publish --path f1tenth_system/f1tenth_stack/package.xml f1tenth_system/ackermann_mux/package.xml f1tenth_system/teleop_tools/joy_teleop/package.xml f1tenth_system/teleop_tools/teleop_tools_msgs/package.xml f1tenth_system/vesc/vesc/package.xml f1tenth_system/vesc/vesc_ackermann/package.xml f1tenth_system/vesc/vesc_driver/package.xml f1tenth_system/vesc/vesc_msgs/package.xml",
+  depends-on = "prep-staging"
+}
+pack = {
+  cmd = "cd staging-channel && pixi pack --platform jetson-orin --use-cache ~/.pixi-pack/cache --directory-only -o .",
+  depends-on = "publish"
+}
+
+# pack-file = "pixi pack --platform jetson-orin --use-cache ~/.pixi-pack/cache -o staging/f1tenth_stack.tar"
 

@@ -1,0 +1,19 @@
+[workspace]
+channels = [
+  "./",
+  "https://prefix.dev/pixi-build-backends",
+  "https://prefix.dev/robostack-jazzy",
+  "https://prefix.dev/conda-forge"
+]
+
+channel-priority = "strict"
+
+platforms = [ { name = "jetson-orin", platform = "linux-aarch64", cuda = "13" } ]
+
+# pixi-build will autodetect this is a ROS package, and use pixi-build-ros to build it
+[dependencies]
+ros-jazzy-ros2launch = "*"
+ros-jazzy-ros2run = "*"
+ros-jazzy-f1tenth-stack = "*"
+
+# pixi-pack --config configtoml
